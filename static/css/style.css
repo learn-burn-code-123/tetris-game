@@ -143,6 +143,49 @@ h1 {
     background-color: var(--secondary-color);
 }
 
+/* Mobile controls */
+.mobile-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 15px 0;
+    width: 300px;
+}
+
+.mobile-controls button {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    font-size: 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.mobile-controls button:active {
+    background-color: var(--secondary-color);
+    transform: scale(0.95);
+}
+
+#drop-btn {
+    background-color: #ff6b6b;
+    width: 80px;
+}
+
+/* Hide mobile controls on desktop */
+@media (min-width: 769px) {
+    .mobile-controls {
+        display: none;
+    }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .game-container {
@@ -157,5 +200,10 @@ h1 {
     
     .game-info {
         width: 280px;
+    }
+    
+    /* Show mobile controls on mobile */
+    .mobile-controls {
+        display: flex;
     }
 }

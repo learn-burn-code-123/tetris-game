@@ -452,25 +452,30 @@ document.addEventListener('DOMContentLoaded', () => {
         
         switch (e.key) {
             case 'ArrowLeft':
+                e.preventDefault(); // Prevent default browser scrolling
                 if (currentPiece.move(-1, 0)) {
                     sounds.move();
                 }
                 break;
             case 'ArrowRight':
+                e.preventDefault(); // Prevent default browser scrolling
                 if (currentPiece.move(1, 0)) {
                     sounds.move();
                 }
                 break;
             case 'ArrowDown':
+                e.preventDefault(); // Prevent default browser scrolling
                 if (currentPiece.move(0, 1)) {
                     sounds.move();
                 }
                 lastDropTime = performance.now();
                 break;
             case 'ArrowUp':
+                e.preventDefault(); // Prevent default browser scrolling
                 currentPiece.rotate();
                 break;
             case ' ':
+                e.preventDefault(); // Prevent default browser scrolling
                 hardDrop();
                 break;
             case 'r':
@@ -484,6 +489,123 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Button controls
     restartButton.addEventListener('click', resetGame);
+    
+    // Touch controls for mobile devices
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, false);
+    
+    document.addEventListener('touchend', (e) => {
+        if (gameOver || paused) return;
+        
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        
+        // Detect swipe direction
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            // Horizontal swipe
+            if (diffX > 50) {
+                // Right swipe
+                if (currentPiece.move(1, 0)) {
+                    sounds.move();
+                }
+            } else if (diffX < -50) {
+                // Left swipe
+                if (currentPiece.move(-1, 0)) {
+                    sounds.move();
+                }
+            }
+        } else {
+            // Vertical swipe
+            if (diffY > 50) {
+                // Down swipe
+                if (currentPiece.move(0, 1)) {
+                    sounds.move();
+                }
+                lastDropTime = performance.now();
+            } else if (diffY < -50) {
+                // Up swipe (rotate)
+                currentPiece.rotate();
+            }
+        }
+        
+        // Prevent default behavior like scrolling
+        e.preventDefault();
+    }, false);
+    
+    // Double tap for hard drop
+    let lastTap = 0;
+    document.addEventListener('touchend', (e) => {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        
+        if (tapLength < 300 && tapLength > 0) {
+            // Double tap detected
+            if (!gameOver && !paused) {
+                hardDrop();
+                e.preventDefault();
+            }
+        }
+        
+        lastTap = currentTime;
+    }, false);
+    
+    // On-screen button controls
+    const leftBtn = document.getElementById('left-btn');
+    const rightBtn = document.getElementById('right-btn');
+    const downBtn = document.getElementById('down-btn');
+    const rotateBtn = document.getElementById('rotate-btn');
+    const dropBtn = document.getElementById('drop-btn');
+    
+    if (leftBtn) {
+        leftBtn.addEventListener('click', () => {
+            if (!gameOver && !paused && currentPiece.move(-1, 0)) {
+                sounds.move();
+            }
+        });
+    }
+    
+    if (rightBtn) {
+        rightBtn.addEventListener('click', () => {
+            if (!gameOver && !paused && currentPiece.move(1, 0)) {
+                sounds.move();
+            }
+        });
+    }
+    
+    if (downBtn) {
+        downBtn.addEventListener('click', () => {
+            if (!gameOver && !paused && currentPiece.move(0, 1)) {
+                sounds.move();
+                lastDropTime = performance.now();
+            }
+        });
+    }
+    
+    if (rotateBtn) {
+        rotateBtn.addEventListener('click', () => {
+            if (!gameOver && !paused) {
+                currentPiece.rotate();
+            }
+        });
+    }
+    
+    if (dropBtn) {
+        dropBtn.addEventListener('click', () => {
+            if (!gameOver && !paused) {
+                hardDrop();
+            }
+        });
+    }
     
     // Initialize game
     function init() {
