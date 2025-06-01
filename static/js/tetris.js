@@ -637,11 +637,25 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
     };
     
+    // Debounce mechanism to prevent rapid firing of button events
+    let lastButtonClickTime = 0;
+    const buttonCooldown = 100; // milliseconds
+    
+    const isButtonCooldownOver = () => {
+        const now = Date.now();
+        if (now - lastButtonClickTime > buttonCooldown) {
+            lastButtonClickTime = now;
+            return true;
+        }
+        return false;
+    };
+    
     if (leftBtn) {
-        // Use touchstart for more responsive mobile controls
-        leftBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        leftBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused && currentPiece.move(-1, 0)) {
+            // Only process if cooldown is over
+            if (!gameOver && !paused && isButtonCooldownOver() && currentPiece.move(-1, 0)) {
                 sounds.move();
             }
         }, { passive: false });
@@ -649,17 +663,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Keep click for desktop testing
         leftBtn.addEventListener('click', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused && currentPiece.move(-1, 0)) {
+            if (!gameOver && !paused && isButtonCooldownOver() && currentPiece.move(-1, 0)) {
                 sounds.move();
             }
         });
     }
     
     if (rightBtn) {
-        // Use touchstart for more responsive mobile controls
-        rightBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        rightBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused && currentPiece.move(1, 0)) {
+            // Only process if cooldown is over
+            if (!gameOver && !paused && isButtonCooldownOver() && currentPiece.move(1, 0)) {
                 sounds.move();
             }
         }, { passive: false });
@@ -667,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Keep click for desktop testing
         rightBtn.addEventListener('click', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused && currentPiece.move(1, 0)) {
+            if (!gameOver && !paused && isButtonCooldownOver() && currentPiece.move(1, 0)) {
                 sounds.move();
             }
         });
@@ -722,10 +737,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (rotateBtn) {
-        // Use touchstart for more responsive mobile controls
-        rotateBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        rotateBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused) {
+            // Only process if cooldown is over
+            if (!gameOver && !paused && isButtonCooldownOver()) {
                 currentPiece.rotate();
                 sounds.rotate();
             }
@@ -734,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Keep click for desktop testing
         rotateBtn.addEventListener('click', (e) => {
             preventDefaultForButtons(e);
-            if (!gameOver && !paused) {
+            if (!gameOver && !paused && isButtonCooldownOver()) {
                 currentPiece.rotate();
                 sounds.rotate();
             }
@@ -742,9 +758,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (dropBtn) {
-        // Use touchstart for more responsive mobile controls
-        dropBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        dropBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
+            // Hard drop doesn't need cooldown since it ends the piece's movement
             if (!gameOver && !paused) {
                 hardDrop();
             }
@@ -760,9 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (pauseBtn) {
-        // Use touchstart for more responsive mobile controls
-        pauseBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        pauseBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
+            // Pause doesn't need cooldown since it's a toggle action
             togglePause();
             // Update button text based on game state
             pauseBtn.textContent = paused ? 'Resume' : 'Pause';
@@ -790,9 +808,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mobile restart button handler
     const restartMobileBtn = document.getElementById('restart-mobile-btn');
     if (restartMobileBtn) {
-        // Use touchstart for more responsive mobile controls
-        restartMobileBtn.addEventListener('touchstart', (e) => {
+        // Use touchend instead of touchstart to prevent unwanted rapid firing
+        restartMobileBtn.addEventListener('touchend', (e) => {
             preventDefaultForButtons(e);
+            // Restart doesn't need cooldown since it resets the game
             resetGame();
         }, { passive: false });
         
