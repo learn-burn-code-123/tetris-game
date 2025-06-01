@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid-Friendly Tetris Game</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Kid-Friendly Tetris</h1>
+        
+        <div class="game-container">
+            <canvas id="tetris-canvas" width="300" height="600"></canvas>
+            
+            <div class="game-info">
+                <div class="next-piece-container">
+                    <h3>Next Piece:</h3>
+                    <canvas id="next-piece-canvas" width="120" height="120"></canvas>
+                </div>
+                
+                <div class="score-container">
+                    <p>Score: <span id="score">0</span></p>
+                    <p>Level: <span id="level">1</span></p>
+                    <p>Lines: <span id="lines">0</span></p>
+                </div>
+                
+                <div class="controls-container">
+                    <h3>Controls:</h3>
+                    <p>← → : Move left/right</p>
+                    <p>↑ : Rotate piece</p>
+                    <p>↓ : Move down faster</p>
+                    <p>Space : Drop piece</p>
+                    <p>P : Pause game</p>
+                    <p>R : Restart game</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="overlay" id="game-over-overlay">
+            <div class="overlay-content">
+                <h2>Game Over!</h2>
+                <p>Final Score: <span id="final-score">0</span></p>
+                <button id="restart-button">Play Again</button>
+            </div>
+        </div>
+        
+        <div class="overlay" id="pause-overlay">
+            <div class="overlay-content">
+                <h2>Game Paused</h2>
+                <p>Press P to continue</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/js/tetris.js"></script>
+</body>
+</html>
