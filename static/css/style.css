@@ -192,10 +192,18 @@ h1 {
     width: 120px;
 }
 
+#pause-btn, #restart-mobile-btn {
+    font-size: 16px;
+    width: 90px;
+    margin: 5px;
+}
+
 #pause-btn {
     background-color: #FFC107; /* Amber */
-    width: 120px;
-    font-size: 18px;
+}
+
+#restart-mobile-btn {
+    background-color: #FF5722; /* Deep Orange */
 }
 
 /* Hide mobile controls on desktop */

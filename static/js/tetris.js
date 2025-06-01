@@ -508,9 +508,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'r':
             case 'R':
-                if (gameOver) {
-                    resetGame();
-                }
+                // Allow restart at any time, not just when game is over
+                resetGame();
                 break;
         }
     });
@@ -785,6 +784,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (paused) {
                 togglePause();
             }
+        });
+    }
+    
+    // Mobile restart button handler
+    const restartMobileBtn = document.getElementById('restart-mobile-btn');
+    if (restartMobileBtn) {
+        // Use touchstart for more responsive mobile controls
+        restartMobileBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            resetGame();
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        restartMobileBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
+            resetGame();
         });
     }
     
