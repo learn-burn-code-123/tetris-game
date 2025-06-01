@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Kid-Friendly Tetris Game</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="manifest" href="/static/manifest.json">
 </head>
 <body>
     <div class="container">
@@ -14,11 +17,20 @@
             <canvas id="tetris-canvas" width="300" height="600"></canvas>
             
             <div class="mobile-controls">
-                <button id="left-btn" aria-label="Move Left">←</button>
-                <button id="rotate-btn" aria-label="Rotate">↑</button>
-                <button id="right-btn" aria-label="Move Right">→</button>
-                <button id="down-btn" aria-label="Move Down">↓</button>
-                <button id="drop-btn" aria-label="Drop">⬇⬇</button>
+                <div class="mobile-controls-row">
+                    <button id="rotate-btn" aria-label="Rotate">↑</button>
+                </div>
+                <div class="mobile-controls-row">
+                    <button id="left-btn" aria-label="Move Left">←</button>
+                    <button id="down-btn" aria-label="Move Down">↓</button>
+                    <button id="right-btn" aria-label="Move Right">→</button>
+                </div>
+                <div class="mobile-controls-row">
+                    <button id="drop-btn" aria-label="Drop">⬇⬇</button>
+                </div>
+                <div class="mobile-controls-row">
+                    <button id="pause-btn" aria-label="Pause">Pause</button>
+                </div>
             </div>
             
             <div class="game-info">

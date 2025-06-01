@@ -146,10 +146,17 @@ h1 {
 /* Mobile controls */
 .mobile-controls {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin: 15px 0;
     width: 300px;
+}
+
+.mobile-controls-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 5px 0;
 }
 
 .mobile-controls button {
@@ -167,6 +174,8 @@ h1 {
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.2s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    touch-action: manipulation; /* Improve touch responsiveness */
 }
 
 .mobile-controls button:active {
@@ -174,9 +183,19 @@ h1 {
     transform: scale(0.95);
 }
 
+#rotate-btn {
+    background-color: #4CAF50; /* Green */
+}
+
 #drop-btn {
-    background-color: #ff6b6b;
-    width: 80px;
+    background-color: #ff6b6b; /* Red */
+    width: 120px;
+}
+
+#pause-btn {
+    background-color: #FFC107; /* Amber */
+    width: 120px;
+    font-size: 18px;
 }
 
 /* Hide mobile controls on desktop */
@@ -188,9 +207,27 @@ h1 {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+        touch-action: manipulation;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        padding: 0;
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    
     .game-container {
         flex-direction: column;
         align-items: center;
+        margin-top: 10px;
+        gap: 15px;
     }
     
     #tetris-canvas {
@@ -200,10 +237,81 @@ h1 {
     
     .game-info {
         width: 280px;
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .next-piece-container, .score-container, .controls-container {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .next-piece-container h3, .controls-container h3 {
+        font-size: 1rem;
+    }
+    
+    .score-container {
+        font-size: 1rem;
+    }
+    
+    .controls-container p {
+        font-size: 0.8rem;
+        margin: 3px 0;
     }
     
     /* Show mobile controls on mobile */
     .mobile-controls {
         display: flex;
+        width: 280px;
+    }
+    
+    .mobile-controls button {
+        width: 50px;
+        height: 50px;
+        margin: 4px;
+        font-size: 20px;
+    }
+    
+    #drop-btn {
+        width: 70px;
+    }
+    
+    /* Optimize overlays for mobile */
+    .overlay-content {
+        padding: 20px;
+        width: 90%;
+        max-width: 300px;
+    }
+    
+    .overlay-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    #restart-button {
+        padding: 8px 16px;
+        font-size: 1rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 360px) {
+    #tetris-canvas {
+        width: 240px;
+        height: 480px;
+    }
+    
+    .game-info, .mobile-controls {
+        width: 240px;
+    }
+    
+    .mobile-controls button {
+        width: 45px;
+        height: 45px;
+        margin: 3px;
+        font-size: 18px;
+    }
+    
+    #drop-btn {
+        width: 60px;
     }
 }

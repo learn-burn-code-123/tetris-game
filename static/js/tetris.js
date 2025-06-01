@@ -1,5 +1,27 @@
 // Kid-Friendly Tetris Game
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Adjust game parameters for mobile if needed
+    if (isMobile) {
+        // Prevent scrolling when touching the game area
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target.closest('#tetris-canvas') || e.target.closest('.mobile-controls')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Prevent zooming on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    }
     // Canvas setup
     const canvas = document.getElementById('tetris-canvas');
     const ctx = canvas.getContext('2d');
@@ -430,6 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
             lastDropTime = performance.now();
             animationId = requestAnimationFrame(gameLoop);
         }
+        
+        // Update pause button text if it exists
+        const pauseBtn = document.getElementById('pause-btn');
+        if (pauseBtn) {
+            pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+        }
     }
     
     // Keyboard controls
@@ -496,50 +524,87 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchEndX = 0;
     let touchEndY = 0;
     
+    // Improved touch controls with better sensitivity
     document.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, false);
+        // Only track touches on the game canvas
+        if (e.target.closest('#tetris-canvas')) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            e.preventDefault(); // Prevent default to avoid unwanted behaviors
+        }
+    }, { passive: false });
     
     document.addEventListener('touchend', (e) => {
-        if (gameOver || paused) return;
+        // Only process touches that started on the game canvas
+        if (!e.target.closest('#tetris-canvas') || gameOver || paused) return;
         
         touchEndX = e.changedTouches[0].screenX;
         touchEndY = e.changedTouches[0].screenY;
         
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
+        const swipeThreshold = 30; // Lower threshold for more responsive controls
         
-        // Detect swipe direction
-        if (Math.abs(diffX) > Math.abs(diffY)) {
-            // Horizontal swipe
-            if (diffX > 50) {
-                // Right swipe
-                if (currentPiece.move(1, 0)) {
-                    sounds.move();
+        // Only process if it's a significant movement (not just a tap)
+        if (Math.abs(diffX) > swipeThreshold || Math.abs(diffY) > swipeThreshold) {
+            // Detect swipe direction - prioritize the direction with larger movement
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Horizontal swipe
+                if (diffX > 0) {
+                    // Right swipe
+                    if (currentPiece.move(1, 0)) {
+                        sounds.move();
+                    }
+                } else {
+                    // Left swipe
+                    if (currentPiece.move(-1, 0)) {
+                        sounds.move();
+                    }
                 }
-            } else if (diffX < -50) {
-                // Left swipe
-                if (currentPiece.move(-1, 0)) {
-                    sounds.move();
+            } else {
+                // Vertical swipe
+                if (diffY > 0) {
+                    // Down swipe
+                    if (currentPiece.move(0, 1)) {
+                        sounds.move();
+                    }
+                    lastDropTime = performance.now();
+                } else {
+                    // Up swipe (rotate)
+                    currentPiece.rotate();
                 }
-            }
-        } else {
-            // Vertical swipe
-            if (diffY > 50) {
-                // Down swipe
-                if (currentPiece.move(0, 1)) {
-                    sounds.move();
-                }
-                lastDropTime = performance.now();
-            } else if (diffY < -50) {
-                // Up swipe (rotate)
-                currentPiece.rotate();
             }
         }
         
         // Prevent default behavior like scrolling
         e.preventDefault();
+    }, { passive: false });
+    
+    // Handle orientation changes
+    window.addEventListener('orientationchange', () => {
+        // Give the browser time to update dimensions
+        setTimeout(() => {
+            // Adjust canvas size if needed
+            if (window.innerWidth < 360) {
+                canvas.width = 240;
+                canvas.height = 480;
+            } else if (window.innerWidth < 768) {
+                canvas.width = 280;
+                canvas.height = 560;
+            } else {
+                canvas.width = 300;
+                canvas.height = 600;
+            }
+            
+            // Redraw everything
+            drawGrid();
+            if (currentPiece) {
+                currentPiece.draw();
+            }
+            if (nextPiece) {
+                nextPiece.drawNext();
+            }
+        }, 300);
     }, false);
     
     // Double tap for hard drop
@@ -565,6 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const downBtn = document.getElementById('down-btn');
     const rotateBtn = document.getElementById('rotate-btn');
     const dropBtn = document.getElementById('drop-btn');
+    const pauseBtn = document.getElementById('pause-btn');
     
     if (leftBtn) {
         leftBtn.addEventListener('click', () => {
@@ -604,6 +670,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!gameOver && !paused) {
                 hardDrop();
             }
+        });
+    }
+    
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => {
+            togglePause();
+            // Update button text based on game state
+            pauseBtn.textContent = paused ? 'Resume' : 'Pause';
         });
     }
     
