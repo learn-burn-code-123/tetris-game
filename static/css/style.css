@@ -203,9 +203,13 @@ h1 {
     .mobile-controls {
         display: none;
     }
+    
+    .desktop-only {
+        display: block;
+    }
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for mobile */
 @media (max-width: 768px) {
     body {
         padding: 10px;
@@ -226,28 +230,22 @@ h1 {
     .game-container {
         flex-direction: column;
         align-items: center;
+        gap: 10px;
         margin-top: 10px;
-        gap: 15px;
     }
     
     #tetris-canvas {
-        width: 280px;
-        height: 560px;
+        width: 250px;
+        height: 400px;
+    }
+    
+    #next-piece-canvas {
+        width: 80px;
+        height: 80px;
     }
     
     .game-info {
         width: 280px;
-        padding: 15px;
-        gap: 10px;
-    }
-    
-    .next-piece-container, .score-container, .controls-container {
-        padding: 8px;
-        margin-bottom: 8px;
-    }
-    
-    .next-piece-container h3, .controls-container h3 {
-        font-size: 1rem;
     }
     
     .score-container {
@@ -257,6 +255,10 @@ h1 {
     .controls-container p {
         font-size: 0.8rem;
         margin: 3px 0;
+    }
+    
+    .desktop-only {
+        display: none;
     }
     
     /* Show mobile controls on mobile */
@@ -287,9 +289,19 @@ h1 {
         font-size: 1.5rem;
     }
     
-    #restart-button {
+    #restart-button, #resume-button {
         padding: 8px 16px;
         font-size: 1rem;
+        margin-top: 10px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    #restart-button:hover, #resume-button:hover {
+        background-color: var(--secondary-color);
     }
 }
 

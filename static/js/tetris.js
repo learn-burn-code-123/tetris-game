@@ -778,6 +778,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Resume button handler
+    const resumeButton = document.getElementById('resume-button');
+    if (resumeButton) {
+        resumeButton.addEventListener('click', () => {
+            if (paused) {
+                togglePause();
+            }
+        });
+    }
+    
     // Initialize game
     function init() {
         // Create initial pieces
