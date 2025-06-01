@@ -632,8 +632,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropBtn = document.getElementById('drop-btn');
     const pauseBtn = document.getElementById('pause-btn');
     
+    // Prevent default button behavior to avoid unwanted actions
+    const preventDefaultForButtons = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    
     if (leftBtn) {
-        leftBtn.addEventListener('click', () => {
+        // Use touchstart for more responsive mobile controls
+        leftBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused && currentPiece.move(-1, 0)) {
+                sounds.move();
+            }
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        leftBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
             if (!gameOver && !paused && currentPiece.move(-1, 0)) {
                 sounds.move();
             }
@@ -641,7 +657,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (rightBtn) {
-        rightBtn.addEventListener('click', () => {
+        // Use touchstart for more responsive mobile controls
+        rightBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused && currentPiece.move(1, 0)) {
+                sounds.move();
+            }
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        rightBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
             if (!gameOver && !paused && currentPiece.move(1, 0)) {
                 sounds.move();
             }
@@ -649,24 +675,85 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (downBtn) {
-        downBtn.addEventListener('click', () => {
-            if (!gameOver && !paused && currentPiece.move(0, 1)) {
-                sounds.move();
+        // For down button, we'll accelerate the drop speed temporarily
+        let downButtonPressed = false;
+        let originalDropInterval = dropInterval;
+        
+        // Speed up when button is pressed
+        downBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                downButtonPressed = true;
+                // Save original interval if not already saved
+                originalDropInterval = dropInterval;
+                // Make the piece fall much faster
+                dropInterval = 50; // Very fast drop speed
                 lastDropTime = performance.now();
+            }
+        }, { passive: false });
+        
+        // Return to normal speed when button is released
+        downBtn.addEventListener('touchend', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                downButtonPressed = false;
+                // Restore original drop speed
+                dropInterval = originalDropInterval;
+            }
+        }, { passive: false });
+        
+        // For click events (desktop testing)
+        downBtn.addEventListener('mousedown', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                downButtonPressed = true;
+                originalDropInterval = dropInterval;
+                dropInterval = 50;
+                lastDropTime = performance.now();
+            }
+        });
+        
+        downBtn.addEventListener('mouseup', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                downButtonPressed = false;
+                dropInterval = originalDropInterval;
             }
         });
     }
     
     if (rotateBtn) {
-        rotateBtn.addEventListener('click', () => {
+        // Use touchstart for more responsive mobile controls
+        rotateBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
             if (!gameOver && !paused) {
                 currentPiece.rotate();
+                sounds.rotate();
+            }
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        rotateBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                currentPiece.rotate();
+                sounds.rotate();
             }
         });
     }
     
     if (dropBtn) {
-        dropBtn.addEventListener('click', () => {
+        // Use touchstart for more responsive mobile controls
+        dropBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            if (!gameOver && !paused) {
+                hardDrop();
+            }
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        dropBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
             if (!gameOver && !paused) {
                 hardDrop();
             }
@@ -674,7 +761,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (pauseBtn) {
-        pauseBtn.addEventListener('click', () => {
+        // Use touchstart for more responsive mobile controls
+        pauseBtn.addEventListener('touchstart', (e) => {
+            preventDefaultForButtons(e);
+            togglePause();
+            // Update button text based on game state
+            pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+        }, { passive: false });
+        
+        // Keep click for desktop testing
+        pauseBtn.addEventListener('click', (e) => {
+            preventDefaultForButtons(e);
             togglePause();
             // Update button text based on game state
             pauseBtn.textContent = paused ? 'Resume' : 'Pause';
